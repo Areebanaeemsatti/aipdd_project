@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual Environments
+.venv/
+aipdd_env/
+env/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Datasets and Large Files
+data/raw/
+data/processed/
+
+# Model Weights
+models/*.pt
+models/*.onnx
+models/*.h5
+*.weights
+
+# Logs and Configs
+logs/
