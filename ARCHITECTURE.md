@@ -1,6 +1,17 @@
+# AIR UNIVERSITY ISLAMABAD
+## Faculty of Computing & AI | Department of Creative Technologies
+### Course: AI Project Design and Development (AI-316)
+**Lab Instructor:** Farhan Zafar  
+**Student Name:** Areeba Naeem 
+**Lab 02:** System Requirements & Software Architecture for AI Projects  
+
 ---
 
-# Task 1: Functional & Non-Functional Requirements Breakdown
+# System Design Specification Document
+
+---
+
+## Task 1: Functional & Non-Functional Requirements Breakdown
 
 ### 1.1 Functional Requirements (FRs)
 | Req ID | Category | Description | Priority |
@@ -22,9 +33,7 @@
 
 ---
 
----
-
-# Task 2: System Boundary, User Persona, & Input/Output Mapping
+## Task 2: System Boundary, User Persona, & Input/Output Mapping
 
 ### 2.1 System Boundary & Primary Actors
 * **Security Operator:** Views live camera analytics, bounding boxes, and security alerts.
@@ -48,9 +57,7 @@
 
 ---
 
----
-
-# Task 3: Data-Flow Diagrams (DFDs)
+## Task 3: Data-Flow Diagrams (DFDs)
 
 ### 3.1 Level 0 DFD (Context Diagram)
 ```mermaid
@@ -59,10 +66,10 @@ graph TD
     B -->|Bounding Boxes & Logs| C[Security Operator / Dashboard]
     B -->|Attendance Logs| D[(Central Database)]
     E[Admin User] -->|Config & Thresholds| B
-
----
-
-graph TD
+```
+### 3.2 Level 1 DFD (Context Diagram)
+```mermaid
+    graph TD
     A[RTSP Stream] --> P1[1.0 Data Ingestion]
     P1 -->|Raw Frame Arrays| P2[2.0 Image Preprocessing]
     P2 -->|Normalized Tensor| P3[3.0 Model Inference Engine]
@@ -70,5 +77,47 @@ graph TD
     P4 -->|Recognized Student ID| P5[5.0 Attendance & Alert Logger]
     P5 --> D1[(Attendance Database)]
     P5 --> D2[(System Alert Logs)]
+```
+## Task 4: Modular Software Architecture Blueprint
 
-    
+### 4.1 System Component Overview
+* **DataIngestion (`src/data_ingestion.py`):** Captures video frames from RTSP/IP cameras safely with multi-threading support.
+* **ImagePreprocessor (`src/preprocessor.py`):** Normalizes frame resolution, converts color spaces (BGR to RGB), and prepares tensors for inference.
+* **ModelInferenceEngine (`src/inference_engine.py`):** Executes YOLO / FaceNet deep learning inference on GPU/CPU accelerators.
+* **AlertLogger (`src/alert_logger.py`):** Records attendance entries to persistent databases and dispatches real-time security alerts.
+
+### 4.2 Class Specifications & Interface Blueprints
+```python
+# src/data_ingestion.py
+class DataIngestion:
+    def __init__(self, stream_url: str, target_fps: int = 30): ...
+    def connect_stream(self) -> bool: ...
+    def read_frame(self) -> Tuple[bool, Optional[np.ndarray]]: ...
+
+# src/preprocessor.py
+class ImagePreprocessor:
+    def __init__(self, target_size: Tuple[int, int] = (640, 640)): ...
+    def preprocess(self, frame: np.ndarray) -> np.ndarray: ...
+
+# src/inference_engine.py
+class ModelInferenceEngine:
+    def __init__(self, model_path: str, confidence_threshold: float = 0.5): ...
+    def predict(self, input_tensor: np.ndarray) -> List[Dict[str, Any]]: ...
+
+# src/alert_logger.py
+class AlertLogger:
+    def __init__(self, log_file_path: str = "logs/attendance.log"): ...
+    def log_attendance(self, student_id: str, confidence: float) -> bool: ...
+    def trigger_alert(self, alert_data: Dict[str, Any]) -> bool: ...
+
+```    
+
+## Task 5: End-to-End System Design Specification Document
+
+This document (`ARCHITECTURE.md`) synthesizes the complete software design requirements, operational boundaries, Data-Flow Diagrams (DFDs), and class-level interfaces into a unified specification for the Smart Automated Attendance & Vision Analytics System.
+
+### 5.1 Verification & Deliverables Summary
+* **Requirements Coverage:** Task 1 Functional (FR-01 to FR-05) and Non-Functional (NFR-01 to NFR-05) metrics established.
+* **Operational Boundary:** Task 2 actors, RTSP input streams, system output specifications, and memory/bandwidth constraints specified.
+* **Data Flow Architecture:** Task 3 Level 0 (Context) and Level 1 DFDs modeled using standard Mermaid.js notation.
+* **Modular Codebase Blueprint:** Task 4 Python interface definitions and class signatures finalized inside the `src/` directory.
